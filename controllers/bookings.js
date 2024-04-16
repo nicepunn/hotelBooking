@@ -1,41 +1,40 @@
 const Booking = require("../models/Booking");
-const Hospital = require("../models/Hospital");
+const Hotel = require("../models/Hotel");
 const User = require("../models/User");
 const { validateBookingAfterToday } = require("../utils/date");
-const { sendMail } = require("./mails");
 
 //@desc     Get all bookings
 //@route    GET /api/v1/bookings
 //@access   Private
 exports.getBookings = async (req, res, next) => {
   let query;
-  let hospitalId = req.params.hospitalId;
+  let hotelId = req.params.hotelId;
   if (req.user.role !== "admin") {
-    if (hospitalId) {
+    if (hotelId) {
       query = Booking.find({
         user: req.user.id,
-        hospital: hospitalId,
+        hotel: hotelId,
       }).populate({
-        path: "hospital",
+        path: "hotel",
         select: "name address tel",
       });
     } else {
       query = Booking.find({
         user: req.user.id,
       }).populate({
-        path: "hospital",
+        path: "hotel",
         select: "name address tel",
       });
     }
   } else {
-    if (hospitalId) {
-      query = Booking.find({ hospital: hospitalId }).populate({
-        path: "hospital",
+    if (hotelId) {
+      query = Booking.find({ hotel: hotelId }).populate({
+        path: "hotel",
         select: "name address tel",
       });
     } else {
       query = Booking.find().populate({
-        path: "hospital",
+        path: "hotel",
         select: "name address tel",
       });
     }
@@ -61,7 +60,7 @@ exports.getBookings = async (req, res, next) => {
 exports.getBooking = async (req, res, next) => {
   try {
     const booking = await Booking.findById(req.params.id).populate({
-      path: "hospital",
+      path: "hotel",
       select: "name address tel",
     });
     if (!booking) {
@@ -80,16 +79,16 @@ exports.getBooking = async (req, res, next) => {
 };
 
 //@desc     Add booking
-//@route    POST /api/v1/hospitals/:hospitalId/bookings
+//@route    POST /api/v1/hotels/:hotelId/bookings
 //@access   Private
 exports.addBooking = async (req, res, next) => {
   try {
-    req.body.hospital = req.params.hospitalId;
-    const hospital = await Hospital.findById(req.params.hospitalId);
-    if (!hospital) {
+    req.body.hotel = req.params.hotelId;
+    const hotel = await Hotel.findById(req.params.hotelId);
+    if (!hotel) {
       return res.status(404).json({
         success: false,
-        message: `No hospital with the id of ${req.params.hospitalId}`,
+        message: `No hotel with the id of ${req.params.hotelId}`,
       });
     }
     req.body.user = req.user.id;
@@ -112,8 +111,6 @@ exports.addBooking = async (req, res, next) => {
       User.findById(req.user.id, function (err, user) {
         if (err) {
           console.log(err);
-        } else {
-          sendMail(user, booking);
         }
       });
     }

@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const hospitals = require("./routes/hospitals");
+const hotels = require("./routes/hotels");
 const auth = require("./routes/auth");
 const bookings = require("./routes/bookings");
 const cookieParser = require("cookie-parser");
@@ -33,7 +33,7 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(hpp());
 app.use(cookieParser());
-app.use("/api/v1/hospitals", hospitals);
+app.use("/api/v1/hotels", hotels);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/bookings", bookings);
 
@@ -47,24 +47,24 @@ const server = app.listen(
   )
 );
 
-const swaggerOptions={
-  swaggerDefinition:{
-    openapi: '3.0.0',
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
     info: {
-    title: 'Library API',
-    version: '1.0.0',
-    description: 'Hospital Booking API'
+      title: "Library API",
+      version: "1.0.0",
+      description: "Hotel Booking API",
     },
     servers: [
       {
-        url: 'http://localhost:5000/api/v1'
-      }
+        url: "http://localhost:5000/api/v1",
+      },
     ],
   },
-  apis:['./routes/*.js'],
+  apis: ["./routes/*.js"],
 };
-const swaggerDocs=swaggerJsDoc(swaggerOptions);
-app.use('/api-docs',swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {

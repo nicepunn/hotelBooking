@@ -3,27 +3,21 @@ const mongoose = require("mongoose");
 const BookingSchema = new mongoose.Schema({
   bookingDate: {
     type: Date,
-    required: true,
+    required: [true, "Please add date"],
   },
-  bookingSession: {
-    type: String,
-    enum: ["morning", "afternoon"],
-    default: "morning",
-  },
-  vaccine: {
-    type: String,
-    enum: ["covid19", "influenza"],
-    default: "covid19",
+  NumberOfNights: {
+    type: Number,
+    required: [true, "Please add Number of Nights"],
   },
   user: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
-    required: true,
+    required: [true, "Please add the user"],
   },
-  hospital: {
+  hotel: {
     type: mongoose.Schema.ObjectId,
-    ref: "Hospital",
-    required: true,
+    ref: "Hotel",
+    required: [true, "Please add the hotel"],
   },
   createdAt: {
     type: Date,
