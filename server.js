@@ -4,6 +4,7 @@ const connectDB = require("./config/db");
 const hotels = require("./routes/hotels");
 const auth = require("./routes/auth");
 const bookings = require("./routes/bookings");
+const transfers = require("./routes/transfer");
 const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
@@ -36,6 +37,7 @@ app.use(cookieParser());
 app.use("/api/v1/hotels", hotels);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/bookings", bookings);
+app.use("/api/v1/transfers", transfers);
 
 const PORT = process.env.PORT || 5001;
 const server = app.listen(

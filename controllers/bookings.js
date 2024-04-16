@@ -70,12 +70,12 @@ exports.getBooking = async (req, res, next) => {
       });
     }
 
-    if (booking.user !== req.user.id) {
+    if (req.user.role !== "admin" && booking.user !== req.user.id) {
       return res
         .status(401)
         .json({ success: false, message: "Not authorize to this route" });
     }
-    
+
     res.status(200).json({ success: true, data: booking });
   } catch (error) {
     console.log(error);
