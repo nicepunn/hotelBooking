@@ -69,6 +69,13 @@ exports.getBooking = async (req, res, next) => {
         message: `No booking with the id of ${req.params.id}`,
       });
     }
+
+    if (booking.user !== req.user.id) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Not authorize to this route" });
+    }
+    
     res.status(200).json({ success: true, data: booking });
   } catch (error) {
     console.log(error);
@@ -83,12 +90,11 @@ exports.getBooking = async (req, res, next) => {
 //@access   Private
 exports.addBooking = async (req, res, next) => {
   try {
-    req.body.hotel = req.params.hotelId;
-    const hotel = await Hotel.findById(req.params.hotelId);
+    const hotel = await Hotel.findById(req.body.hotel);
     if (!hotel) {
       return res.status(404).json({
         success: false,
-        message: `No hotel with the id of ${req.params.hotelId}`,
+        message: `No hotel with the id of ${req.body.hotel}`,
       });
     }
     req.body.user = req.user.id;
@@ -102,6 +108,12 @@ exports.addBooking = async (req, res, next) => {
         message: `The booking date should be after today.`,
       });
     } else {
+      if (req.body.NumberOfNights > 3 || req.body.NumberOfNights < 1) {
+        return res.status(400).json({
+          success: false,
+          message: "Number of Nights should be within 3",
+        });
+      }
       const booking = await Booking.create(req.body);
       res.status(200).json({
         success: true,
@@ -153,6 +165,14 @@ exports.updateBooking = async (req, res, next) => {
         });
       }
     }
+
+    if (req.body.NumberOfNights > 3 || req.body.NumberOfNights < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Number of Nights should be within 3",
+      });
+    }
+
     booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
