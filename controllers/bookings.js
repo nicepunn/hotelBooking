@@ -99,7 +99,6 @@ exports.addBooking = async (req, res, next) => {
     }
     req.body.user = req.user.id;
 
-    // only allow the registered user to book after today
     const bookingDate = new Date(req.body.bookingDate);
     const isValidDate = validateBookingAfterToday(bookingDate);
     if (!isValidDate.afterToday) {
@@ -114,16 +113,11 @@ exports.addBooking = async (req, res, next) => {
           message: "Number of Nights should be within 3",
         });
       }
+
       const booking = await Booking.create(req.body);
-      res.status(200).json({
+      res.status(201).json({
         success: true,
         data: booking,
-      });
-
-      User.findById(req.user.id, function (err, user) {
-        if (err) {
-          console.log(err);
-        }
       });
     }
   } catch (error) {
