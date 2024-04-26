@@ -79,6 +79,16 @@ exports.createTransfer = async (req, res, next) => {
 
     res.status(201).json(response);
   } catch (err) {
+    if (
+      err.code === 11000 &&
+      err.keyPattern &&
+      err.keyPattern.bookingId === 1
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: `Transfer with booking id ${err.keyValue.bookingId} already exists`,
+      });
+    }
     res.status(400).json({ success: false, message: err });
   }
 };

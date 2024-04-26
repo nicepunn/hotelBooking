@@ -74,6 +74,14 @@ exports.createHotel = async (req, res, next) => {
     const hotel = await Hotel.create(req.body);
     res.status(201).json({ success: true, data: hotel });
   } catch (err) {
+    if (err.code === 11000 && err.keyPattern && err.keyPattern.name === 1) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: `Hotel ${req.body.name} already exists`,
+        });
+    }
     res.status(400).json({ success: false, message: err });
   }
 };
