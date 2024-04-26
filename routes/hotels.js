@@ -98,7 +98,6 @@ const { protect, authorize } = require("../middleware/auth");
  *               items:
  *               $ref: '#/components/schemas/Hotel'
  */
-router.use("/:hotelId/bookings", bookingRouter);
 router.route("/").get(getHotels).post(protect, authorize("admin"), createHotel);
 
 /**
